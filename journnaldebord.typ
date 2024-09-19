@@ -32,10 +32,28 @@ Il existe un champs de recherche à part entiere qui s'interresse à la distinct
 
 #line(length: 500pt)
 = 12/09/2024 - Implémentation Ocaml
-- Implémentation ocaml des algorithme pour la stéganographie image et 
+- Implémentation ocaml des algorithme pour la stéganographie image et
+
+= 19/09/2024 - git init et recher documentaire.
+== Définition de la problèmatique
+  *Problématique* : Est-il possible de créer un algorithme de stéganalyse géneraliste, i.e un algorithme qui n'a pas connaissance du mode de dissimulation utilisé ?
+
+  *Les differents modes de dissimulation :*
+    - Système de substitution : remplacer une partie de la cover (1) par des donnée de l'information à dissimulée.
+    - Transformation des paramètre de la cover : modification des paramètre physique de la cover en fonction de l'information à dissimulé (ex: fréquence)
+    - Même choses avec le spectre.
+    - Méthode statistique : modifier la distribution statistique de la cover en fonction de la stégo.
+    - Techniques de distortion : stocker des informations par distorsion du signal et mesurer l'écart par rapport à la couverture originale lors de l'étape de décodage
+    - Méthodes de génération de couverture : encoder les informations de manière à cacher un secret la communication se crée.
+  
+  *Objectif :* Trouver un invariant de dissimulation !
+
 
 =  Vocabulaire (MAJ 12/03/2024)
-donnée pur : donnée de cachant pas d'autres données issue d'un processuce stéganographique.
++ donnée pur : donnée de cachant pas d'autres données issue d'un processuce stéganographique.
++ cover : suport pour la dissimulation d'information cachée.
++ stego : information à cachée.
++
 
 = Lecture en attente :
 #link("https://utt.hal.science/hal-02470070/document")\
@@ -47,3 +65,4 @@ donnée pur : donnée de cachant pas d'autres données issue d'un processuce st�
 #link("https://fr.wikipedia.org/wiki/Algorithme_de_Knuth-Morris-Pratt")\
 #link("https://theses.hal.science/tel-00706171v2/file/RCogranne_soutenance.pdf")
 #link("https://repository.root-me.org/St%C3%A9ganographie/FR%20-%20Analyse%20st%C3%A9ganographique%20d%27images%20num%C3%A9riques.pdf")
+#link("https://d1wqtxts1xzle7.cloudfront.net/11025045/22359536_lese_1-libre.pdf?1363619886=&response-content-disposition=inline%3B+filename%3DA_survey_of_steganographic_techniques.pdf&Expires=1726758425&Signature=UWNEvv4JIxHsL-iZcX-PzwvRlbmce0~unnnAUFS2lB~tsuJUbrH1Mzt4ZnO~D1Dhn9DKUo0jtG-BZnkuZYYz5iSvTUuJHJJqcZ65yceho5qgmi7Jpv9OnJsNLxnqAjhHp~frVhRI3yYvhmZRsOL0gdCCCy6O5Bb9XcylGMKZA5k8SZq0Jqme~XdEXRGESCvJy69F2bQ5K~X5IF9j5VaYj7WMOj~n-QC8DG2cJBk-1GRz5NbPu5Udq4R1U-pr2GvYZKJJmqnb7MQoutftG~9-jS~WMxnag3IlAe8g~vlz87mWWLxGle-6fbBg1I-EOa63b3fzUVsFY2bLQo0WgwqNMQ__&Key-Pair-Id=APKAJLOHF5GGSLRBV4ZA")
