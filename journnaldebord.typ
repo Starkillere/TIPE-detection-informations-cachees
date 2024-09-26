@@ -48,6 +48,18 @@ Il existe un champs de recherche à part entiere qui s'interresse à la distinct
   
   *Objectif :* Trouver un invariant de dissimulation !
 
+= 26/09/2024 : Prolongement par continuité de la semaine dernière (lecture 10)
+- *problèmatique : * Est-il possible d'identifier un paternel, une caractéristique propre aux données issues du processus de stéganographie ?
+
+== Protocole :
+ - Étudier les differentes méthodes de stéganograpbhie (substitution, Transformation, spectre, statistique, distortion, géneration de cover)
+ - Étudier la réponse stéganalyse à ses algorithmes
+ - Identification d'invariant de dissimulation 
+
+== Étude des différentes méthode de stéganograpbhie
+=== Système de substitution : 
+  
+
 
 =  Vocabulaire (MAJ 12/03/2024)
 + donnée pur : donnée de cachant pas d'autres données issue d'un processuce stéganographique.
@@ -56,13 +68,13 @@ Il existe un champs de recherche à part entiere qui s'interresse à la distinct
 +
 
 = Lecture en attente :
-#link("https://utt.hal.science/hal-02470070/document")\
-#link("https://fr.wikipedia.org/wiki/Entropie_de_Shannon")\
-#link("https://fr.wikipedia.org/wiki/Th%C3%A9orie_de_l%27information")\
-#link("https://hal.science/hal-00394108/document")\
-#link("https://greenteapress.com/thinkdsp/thinkdsp.pdf")\
-#link(" http://tinyurl.com/thinkdsp08")\ // REP- pour les algo de traitement de signale
-#link("https://fr.wikipedia.org/wiki/Algorithme_de_Knuth-Morris-Pratt")\
-#link("https://theses.hal.science/tel-00706171v2/file/RCogranne_soutenance.pdf")
-#link("https://repository.root-me.org/St%C3%A9ganographie/FR%20-%20Analyse%20st%C3%A9ganographique%20d%27images%20num%C3%A9riques.pdf")
-#link("https://d1wqtxts1xzle7.cloudfront.net/11025045/22359536_lese_1-libre.pdf?1363619886=&response-content-disposition=inline%3B+filename%3DA_survey_of_steganographic_techniques.pdf&Expires=1726758425&Signature=UWNEvv4JIxHsL-iZcX-PzwvRlbmce0~unnnAUFS2lB~tsuJUbrH1Mzt4ZnO~D1Dhn9DKUo0jtG-BZnkuZYYz5iSvTUuJHJJqcZ65yceho5qgmi7Jpv9OnJsNLxnqAjhHp~frVhRI3yYvhmZRsOL0gdCCCy6O5Bb9XcylGMKZA5k8SZq0Jqme~XdEXRGESCvJy69F2bQ5K~X5IF9j5VaYj7WMOj~n-QC8DG2cJBk-1GRz5NbPu5Udq4R1U-pr2GvYZKJJmqnb7MQoutftG~9-jS~WMxnag3IlAe8g~vlz87mWWLxGle-6fbBg1I-EOa63b3fzUVsFY2bLQo0WgwqNMQ__&Key-Pair-Id=APKAJLOHF5GGSLRBV4ZA")
++ #link("https://utt.hal.science/hal-02470070/document")\
++ #link("https://fr.wikipedia.org/wiki/Entropie_de_Shannon")\
++ #link("https://fr.wikipedia.org/wiki/Th%C3%A9orie_de_l%27information")\
++ #link("https://hal.science/hal-00394108/document")\
++ #link("https://greenteapress.com/thinkdsp/thinkdsp.pdf")\
++ #link(" http://tinyurl.com/thinkdsp08")\ // REP- pour les algo de traitement de signale
++ #link("https://fr.wikipedia.org/wiki/Algorithme_de_Knuth-Morris-Pratt")\
++ #link("https://theses.hal.science/tel-00706171v2/file/RCogranne_soutenance.pdf")
++ #link("https://repository.root-me.org/St%C3%A9ganographie/FR%20-%20Analyse%20st%C3%A9ganographique%20d%27images%20num%C3%A9riques.pdf")
++ #link("https://d1wqtxts1xzle7.cloudfront.net/11025045/22359536_lese_1-libre.pdf?1363619886=&response-content-disposition=inline%3B+filename%3DA_survey_of_steganographic_techniques.pdf&Expires=1726758425&Signature=UWNEvv4JIxHsL-iZcX-PzwvRlbmce0~unnnAUFS2lB~tsuJUbrH1Mzt4ZnO~D1Dhn9DKUo0jtG-BZnkuZYYz5iSvTUuJHJJqcZ65yceho5qgmi7Jpv9OnJsNLxnqAjhHp~frVhRI3yYvhmZRsOL0gdCCCy6O5Bb9XcylGMKZA5k8SZq0Jqme~XdEXRGESCvJy69F2bQ5K~X5IF9j5VaYj7WMOj~n-QC8DG2cJBk-1GRz5NbPu5Udq4R1U-pr2GvYZKJJmqnb7MQoutftG~9-jS~WMxnag3IlAe8g~vlz87mWWLxGle-6fbBg1I-EOa63b3fzUVsFY2bLQo0WgwqNMQ__&Key-Pair-Id=APKAJLOHF5GGSLRBV4ZA")
