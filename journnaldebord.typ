@@ -56,8 +56,30 @@ Il existe un champs de recherche à part entiere qui s'interresse à la distinct
  - Étudier la réponse stéganalyse à ses algorithmes
  - Identification d'invariant de dissimulation 
 
-== Étude des différentes méthode de stéganograpbhie
-=== Système de substitution : 
+== 03/10/2024 : Définition formelle de l'information : 
+  [ \
+    l1 |(1,0,1) (1,0,1)| \
+    l2 |(0,0,0) (0,0,0)| \
+  ] \
+
+  Une information est une matrice de tuple de taille n de nombre binaire sur.
+  - *Cas de base :*
+    - *Information vide (null) : * #pad(x:20pt)[
+    On note $epsilon$ l'information vide de taille $|epsilon| = 0$ \   
+    $epsilon = mat()$]
+    - *Information de base :* #pad(x:20pt)[
+      $forall space (b_n) in BB^NN$ fini $L =  mat((b_0b_1...b_n))$ de taille $|L| = n+1$
+    ]
+    - *Notation* #pad(x:20pt)[
+      - On note $cal(M)_(n,p,l) (BB^NN)$ l'ensemble des information de matrice dans $cal(M)_(n,p) (BB^NN)$ dont les tuple sont de $l$ élément.
+    ]
+
+    - *Operation sur les informations :*
+     - *Taille d'une information :* $"Soit" L in cal(M)_(n,p)(BB^NN) "une information"$, la taille de $L$ est noté $|L| = n×p$
+     - *Caractéristiques d'une information :* $"Soit" L in cal(M)_(n,p)(BB^NN) "une information" $
+     - *Union/Intersection :* $"Soit" L_1 "et" L_2 "deux information de taille" n$
+      - $L_1 union L_2 =$
+  
   
 
 

@@ -144,3 +144,5 @@ def cacher_dans_poid_faible(image_a_cacher:str, image_hote:str) -> str:
     nom = datetime.datetime.now()
     image_steg.save(f"{nom}.png")
     return  f"{nom}.png"
+if __name__ == "__main__" :
+    estHomogene()
