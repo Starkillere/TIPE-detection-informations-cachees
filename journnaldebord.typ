@@ -81,7 +81,8 @@ Il existe un champs de recherche à part entiere qui s'interresse à la distinct
       - $L_1 union L_2 =$
   
   
-
+= 10/10/2024 : Définition du repertoir documentation/prototypage
+== Définition formelle de l'information
 
 =  Vocabulaire (MAJ 12/03/2024)
 + donnée pur : donnée de cachant pas d'autres données issue d'un processuce stéganographique.

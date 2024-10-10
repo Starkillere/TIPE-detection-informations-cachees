@@ -1,24 +1,26 @@
 """
 
+Définition du type information 
+Par Ayouba Anrezki
+le 10/10/2024
+
 """
 
 class Information:
-    """
-    Information (définition inductive): 
-        - information_vide  -> (information_vide) | (Est une fomation de taille 0)
-        - b in B -> (b) | (est une information de taille 1)
-        - On pération +
-            - b in B  (b) + (infomation_vide) = (b)
-            - pour tout n in N b_0,...b_n in B^n  (b_0) + ... + (b_n) = (b_0, ... , b_n) | (est une infomation de taille n + 1)
-        - Une matrice d'information est une information
-        - L'ensemble des infomation forme un (B union {information_vide)}-espace vectoriel
-    """
 
-    B:set = {0,1}
     EPSILONE:list = [[()]]
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, nom_information:str, nom_de_l_algorithme:str, nombre_de_lignes:int, nombre_de_colonnes:int, taille_uplet:int) -> None:
+        self.nom_information =  nom_information
+        self.nom_algorithme = nom_de_l_algorithme
+        self.nombre_lignes = nombre_de_lignes
+        self.nombre_colonnes = nombre_de_colonnes
+        self.taille_uplet = taille_uplet
+        self.taille = self.__calcule_taille()
+        self.forme_matricielle =  self.__init_forme_matricielle()
 
-    def creeinformation() -> None : 
-        pass
+    def __calcule_taille(self) -> int:
+        return self.nombre_colonnes*self.nombre_lignes*self.taille_uplet
+    
+    def __init_forme_matricielle(self) -> list:
+        return [[tuple([0 for p in range(self.taille_uplet)]) for j in range(self.nombre_colonnes)] for i in range(self.nombre_lignes)]
