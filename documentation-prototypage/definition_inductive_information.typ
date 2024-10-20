@@ -33,7 +33,7 @@ On définie aussi des opération sur ces matrice  :
 === L'information vide :
 On définit l'information vide comme étant l'information de base de taille $0$ noté $epsilon$, c'est la matrice avec $n×p$ 0-uplet.
 === Les briques de base de l'information
-pour tout $x in RR$ $[(x)]$ est la représentation matricielle d'une information par un algorithme.
+pour tout $x in RR$, $[(x)]$ est la représentation matricielle d'une information par un algorithme.
 
 
 = Note à moi même : 
