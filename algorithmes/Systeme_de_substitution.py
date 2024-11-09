@@ -11,7 +11,7 @@ from Information import Information
 from random import SystemRandom
 
 aleatoirgenerateur = SystemRandom()
-
+#addaptation pour le nombre de bits 
 def substitution(hote:Information, information:Information) -> Information: 
 
     """
@@ -55,3 +55,31 @@ def substitution(hote:Information, information:Information) -> Information:
                 cover.forme_matricielle[i][j][k] = remplacer(hote.forme_matricielle[i][j][k], information.forme_matricielle[i][j][k])
     return cover
 
+def cree_cover(information:Information) -> Information:
+    
+    """
+        entrée : information
+        sortie : Information 
+    """
+
+if __name__ == '__main__':
+   
+
+    def random_init(inf:Information) -> Information:
+        
+        """
+        """
+        
+        for i in range(inf.nombre_lignes):
+            for j in range(inf.nombre_colonnes):
+                for p in range(inf.taille_uplet):
+                    inf.forme_matricielle[i][j][p] = aleatoirgenerateur.randint(0,255)
+        return inf
+    
+    info:Information =  random_init(Information("test-0", "alea-de-la-vie", 500, 500, 3))
+    cover_info:Information = random_init(Information("test-0", "alea-de-la-vie", 500, 500, 3))
+
+    print(info)
+    print(cover_info)
+
+    
