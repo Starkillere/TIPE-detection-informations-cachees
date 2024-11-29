@@ -60,7 +60,10 @@ def cree_cover(information:Information) -> Information:
     """
         entrée : information
         sortie : Information 
+
+        randommly
     """
+    
 
 if __name__ == '__main__':
    
@@ -79,7 +82,3 @@ if __name__ == '__main__':
     info:Information =  random_init(Information("test-0", "alea-de-la-vie", 500, 500, 3))
     cover_info:Information = random_init(Information("test-0", "alea-de-la-vie", 500, 500, 3))
 
-    print(info)
-    print(cover_info)
-
-    
