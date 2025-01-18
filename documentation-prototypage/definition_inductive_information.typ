@@ -38,3 +38,4 @@ pour tout $x in RR$, $[(x)]$ est la représentation matricielle d'une informatio
 
 = Note à moi même : 
 Toutes information posséde une unique représentation matricielle par un algorithme donné.
+

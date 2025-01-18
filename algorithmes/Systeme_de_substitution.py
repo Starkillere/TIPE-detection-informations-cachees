@@ -32,7 +32,7 @@ def substitution(hote:Information, information:Information) -> Information:
             post-condition : l'entier retourner à pour décomposition en base 2 sur 8 bits les quatre premier bits de val_hot
                              et les 4 premier bits de val_information (premier bits -> bits de poid fort)
         """
-
+ 
         bin_val_hote:str = bin(val_hote)[2:]
         bin_val_information:str = bin(val_information)[2:]
         
@@ -41,7 +41,7 @@ def substitution(hote:Information, information:Information) -> Information:
 
         octets_nouv_val:str = octets_hote[:4]+octets_information[4:]
 
-        nouv_val:int = int(octets_hote, 2)
+        nouv_val:int = int(octets_nouv_val, 2)
 
         return nouv_val
 
@@ -60,8 +60,6 @@ def cree_cover(information:Information) -> Information:
     """
         entrée : information
         sortie : Information 
-
-        randommly
     """
     
 
