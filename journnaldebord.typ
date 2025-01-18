@@ -7,13 +7,13 @@
 
 = 12/03/2024 : Définition du sujet.
 == Définition du problème
-La stéganographie désigne l'art de dissimler de l'information de manière subtile.
-Tout la sécurité de cette méthode de dissimulation réside dans la non connaissance des observateur non averties,
-de la présence d'une information cachée. La variante informatique de ce procéder consite dans la dissimulation des donnée dans le coprs d'autres donnée.
-Si la stéganographie permet de transférer des donnée à l'abrie du regards des observateurs non averties, nous pouvons toujours nous demander si
-il n'est pas possible d'affaiblir la sécurité de cette méthode de dissimulation. *Autrement dit est-il possible de distinguer le bruit d'une information cachée ?*
+La stéganographie désigne l'art de dissimuler de l'information de manière subtile.
+Toute la sécurité de cette méthode de dissimulation réside dans la non-connaissance des observateurs non avertis,
+de la présence d'une information cachée. La variante informatique de ce procédé consiste dans la dissimulation des données dans le corps d'autres données.
+Si la stéganographie permet de transférer des données à l'abri des regards des observateurs non avertis, nous pouvons toujours nous demander si
+il n'est pas possible d'affaiblir la sécurité de cette méthode de dissimulation. *Autrement dit, est-il possible de distinguer le bruit d'une information cachée ?*
 == Idée d'orientation 
-Il existe un champs de recherche à part entiere qui s'interresse à la distinction entre donnée pur et donnée issue d'une procéssuce stéganographique qui se nomme #link("https://fr.wikipedia.org/wiki/St%C3%A9ganalyse")[Stéganalyse]
+Il existe un champ de recherche à part entière qui s'intéresse à la distinction entre données pures et données issues d'un processus stéganographique qui se nomme #link("https://fr.wikipedia.org/wiki/St%C3%A9ganalyse")[Stéganalyse]
 === Méthodes de distinction
 - *Analyse statistique :*  \ Les données qui contiennent simplement du bruit peuvent avoir des caractéristiques statistiques différentes de celles qui cachent des informations. Vous pourriez étudier des mesures telles que l'entropie, la distribution des valeurs de pixels, les corrélations spatiales, etc.
 
@@ -28,33 +28,33 @@ Il existe un champs de recherche à part entiere qui s'interresse à la distinct
 = 02/04/2024 : Phénomène aléatoire
 == Entropie de Shannon
 == Théorie de l'information
-= 02/04/2024 :  Meqsure 
+= 02/04/2024 :  Mesure 
 
 #line(length: 500pt)
 = 12/09/2024 - Implémentation Ocaml
-- Implémentation ocaml des algorithme pour la stéganographie image et
+- Implémentation Ocaml des algorithmes pour la stéganographie image et
 
-= 19/09/2024 - git init et recher documentaire.
-== Définition de la problèmatique
-  *Problématique* : Est-il possible de créer un algorithme de stéganalyse géneraliste, i.e un algorithme qui n'a pas connaissance du mode de dissimulation utilisé ?
+= 19/09/2024 - git init et recherche documentaire.
+== Définition de la problématique
+  *Problématique* : Est-il possible de créer un algorithme de stéganalyse généraliste, i.e. un algorithme qui n'a pas connaissance du mode de dissimulation utilisé ?
 
-  *Les differents modes de dissimulation :*
-    - Système de substitution : remplacer une partie de la cover (1) par des donnée de l'information à dissimulée.
-    - Transformation des paramètre de la cover : modification des paramètre physique de la cover en fonction de l'information à dissimulé (ex: fréquence)
-    - Même choses avec le spectre.
+  *Les différents modes de dissimulation :*
+    - Système de substitution : remplacer une partie de la cover (1) par des données de l'information à dissimuler.
+    - Transformation des paramètres de la cover : modification des paramètres physiques de la cover en fonction de l'information à dissimuler (ex : fréquence).
+    - Même chose avec le spectre.
     - Méthode statistique : modifier la distribution statistique de la cover en fonction de la stégo.
-    - Techniques de distortion : stocker des informations par distorsion du signal et mesurer l'écart par rapport à la couverture originale lors de l'étape de décodage
-    - Méthodes de génération de couverture : encoder les informations de manière à cacher un secret la communication se crée.
+    - Techniques de distorsion : stocker des informations par distorsion du signal et mesurer l'écart par rapport à la couverture originale lors de l'étape de décodage.
+    - Méthodes de génération de couverture : encoder les informations de manière à cacher un secret dans la communication créée.
   
   *Objectif :* Trouver un invariant de dissimulation !
 
 = 26/09/2024 : Prolongement par continuité de la semaine dernière (lecture 10)
-- *problèmatique : * Est-il possible d'identifier un paternel, une caractéristique propre aux données issues du processus de stéganographie ?
+- *Problématique : * Est-il possible d'identifier un pattern, une caractéristique propre aux données issues du processus de stéganographie ?
 
 == Protocole :
- - Étudier les differentes méthodes de stéganograpbhie (substitution, Transformation, spectre, statistique, distortion, géneration de cover)
- - Étudier la réponse stéganalyse à ses algorithmes
- - Identification d'invariant de dissimulation 
+ - Étudier les différentes méthodes de stéganographie (substitution, transformation, spectre, statistique, distorsion, génération de cover).
+ - Étudier la réponse stéganalyse à ces algorithmes.
+ - Identification d'invariants de dissimulation. 
 
 == 03/10/2024 : Définition formelle de l'information : 
   [ \
@@ -62,7 +62,7 @@ Il existe un champs de recherche à part entiere qui s'interresse à la distinct
     l2 |(0,0,0) (0,0,0)| \
   ] \
 
-  Une information est une matrice de tuple de taille n de nombre binaire sur.
+  Une information est une matrice de tuples de taille n de nombres binaires.
   - *Cas de base :*
     - *Information vide (null) : * #pad(x:20pt)[
     On note $epsilon$ l'information vide de taille $|epsilon| = 0$ \   
@@ -71,23 +71,23 @@ Il existe un champs de recherche à part entiere qui s'interresse à la distinct
       $forall space (b_n) in BB^NN$ fini $L =  mat((b_0b_1...b_n))$ de taille $|L| = n+1$
     ]
     - *Notation* #pad(x:20pt)[
-      - On note $cal(M)_(n,p,l) (BB^NN)$ l'ensemble des information de matrice dans $cal(M)_(n,p) (BB^NN)$ dont les tuple sont de $l$ élément.
+      - On note $cal(M)_(n,p,l) (BB^NN)$ l'ensemble des informations de matrice dans $cal(M)_(n,p) (BB^NN)$ dont les tuples sont de $l$ éléments.
     ]
 
-    - *Operation sur les informations :*
-     - *Taille d'une information :* $"Soit" L in cal(M)_(n,p)(BB^NN) "une information"$, la taille de $L$ est noté $|L| = n×p$
+    - *Opérations sur les informations :*
+     - *Taille d'une information :* $"Soit" L in cal(M)_(n,p)(BB^NN) "une information"$, la taille de $L$ est notée $|L| = n×p$
      - *Caractéristiques d'une information :* $"Soit" L in cal(M)_(n,p)(BB^NN) "une information" $
-     - *Union/Intersection :* $"Soit" L_1 "et" L_2 "deux information de taille" n$
+     - *Union/Intersection :* $"Soit" L_1 "et" L_2 "deux informations de taille" n$
       - $L_1 union L_2 =$
   
   
-= 10/10/2024 : Définition du repertoir documentation/prototypage
+= 10/10/2024 : Définition du répertoire documentation/prototypage
 == Définition formelle de l'information
 
 =  Vocabulaire (MAJ 12/03/2024)
-+ donnée pur : donnée de cachant pas d'autres données issue d'un processuce stéganographique.
-+ cover : suport pour la dissimulation d'information cachée.
-+ stego : information à cachée.
++ données pures : données ne cachant pas d'autres données issues d'un processus stéganographique.
++ cover : support pour la dissimulation d'informations cachées.
++ stego : information à cacher.
 +
 
 = Lecture en attente :
@@ -96,8 +96,8 @@ Il existe un champs de recherche à part entiere qui s'interresse à la distinct
 + #link("https://fr.wikipedia.org/wiki/Th%C3%A9orie_de_l%27information")\
 + #link("https://hal.science/hal-00394108/document")\
 + #link("https://greenteapress.com/thinkdsp/thinkdsp.pdf")\
-+ #link(" http://tinyurl.com/thinkdsp08")\ // REP- pour les algo de traitement de signale
++ #link(" http://tinyurl.com/thinkdsp08")\ // REP- pour les algo de traitement de signal
 + #link("https://fr.wikipedia.org/wiki/Algorithme_de_Knuth-Morris-Pratt")\
 + #link("https://theses.hal.science/tel-00706171v2/file/RCogranne_soutenance.pdf")
 + #link("https://repository.root-me.org/St%C3%A9ganographie/FR%20-%20Analyse%20st%C3%A9ganographique%20d%27images%20num%C3%A9riques.pdf")
-+ #link("https://d1wqtxts1xzle7.cloudfront.net/11025045/22359536_lese_1-libre.pdf?1363619886=&response-content-disposition=inline%3B+filename%3DA_survey_of_steganographic_techniques.pdf&Expires=1726758425&Signature=UWNEvv4JIxHsL-iZcX-PzwvRlbmce0~unnnAUFS2lB~tsuJUbrH1Mzt4ZnO~D1Dhn9DKUo0jtG-BZnkuZYYz5iSvTUuJHJJqcZ65yceho5qgmi7Jpv9OnJsNLxnqAjhHp~frVhRI3yYvhmZRsOL0gdCCCy6O5Bb9XcylGMKZA5k8SZq0Jqme~XdEXRGESCvJy69F2bQ5K~X5IF9j5VaYj7WMOj~n-QC8DG2cJBk-1GRz5NbPu5Udq4R1U-pr2GvYZKJJmqnb7MQoutftG~9-jS~WMxnag3IlAe8g~vlz87mWWLxGle-6fbBg1I-EOa63b3fzUVsFY2bLQo0WgwqNMQ__&Key-Pair-Id=APKAJLOHF5GGSLRBV4ZA")
++ #link("https://d1wqtxts1xzle7.cloudfront.net/11025045/22359536_lese_1-libre.pdf?1363619886=&response-content-disposition=inline%3B+ filename%3DA_survey_of_steganographic_techniques.pdf&Expires=1726758425&Signature=UWNEvv4JIxHsL-iZcX-PzwvRlbmce0~unnnAUFS2lB~tsuJUbrH1Mzt4ZnO~D1Dhn9DKUo0jtG-BZnkuZYYz5iSvTUuJHJJqcZ65yceho5qgmi7Jpv9OnJsNLxnqAjhHp~frVhRI3yYvhmZRsOL0gdCCCy6O5Bb9XcylGMKZA5k8SZq0Jqme~XdEXRGESCvJy69F2bQ5K~X5IF9j5VaYj7WMOj~n-QC8DG2cJBk-1GRz5NbPu5Udq4R1U-pr2GvYZKJJmqnb7MQoutftG~9-jS~WMxnag3IlAe8g~vlz87mWWLxGle-6fbBg1I-EOa63b3fzUVsFY2bLQo0WgwqNMQ__&Key-Pair-Id=APKAJLOHF5GGSLRBV4ZA")
