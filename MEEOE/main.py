@@ -1,6 +1,5 @@
 from add_data_to_db import *
-#from algorithme_de_dissimulation import *
-from tricherie import *
+from algorithme_de_dissimulation import *
 from db_manager import *
 from recole_des_donnees_limlite import *
 import os
