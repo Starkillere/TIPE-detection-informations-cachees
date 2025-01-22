@@ -1,4 +1,3 @@
-from MEEOE import *
 import sqlite3 as s3
 from Methodes import *
 from datetime import datetime
@@ -84,7 +83,7 @@ def creat_covers(database: str) -> bool:
                 continue
 
             methode = hote["methode"]
-            output_name = f"cover_{datetime.now().strftime('%Y%m%d%H%M%S')}."+cover["path"].split(".")[len(cover["path"].split("."))-1]
+            output_name = f"covers/cover_{datetime.now().strftime('%Y%m%d%H%M%S')}."+hote["path"].split(".")[len(hote["path"].split("."))-1]
             cover = {"path": output_name, "type": hote["type"], "idhideData": hide["id"]}
 
             try:

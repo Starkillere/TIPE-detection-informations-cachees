@@ -9,3 +9,7 @@
     sortie : bool -> (true si cache une information, false sinon)
 
 pour la rendre plus compréhensible et meilleur en mettent en avant les point important 
+
+## Sources des données : 
+ - source images :  [landscape images](https://www.kaggle.com/datasets/arnaud58)
+ - source sons : [Speaker Recognition Audio Dataset](https://www.kaggle.com/datasets/vjcalling/speaker-recognition-audio-dataset)

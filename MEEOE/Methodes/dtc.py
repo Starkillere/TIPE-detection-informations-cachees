@@ -2,8 +2,13 @@ import cv2
 import numpy as np
 
 def hide_message_dct(image_path, message, output_path):
-    img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    img = cv2.imread(image_path)
+
+    if len(img.shape) == 3:  
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
     h, w = img.shape
+
     if len(message) * 8 > h * w // 64:
         raise ValueError("Message too large for this image.")
 
@@ -15,12 +20,16 @@ def hide_message_dct(image_path, message, output_path):
             if binary_idx >= len(binary_message):
                 break
             block = img[i:i+8, j:j+8]
+
             dct_block = cv2.dct(block.astype(np.float32))
+
             dct_block[7, 7] = (dct_block[7, 7] & ~1) | int(binary_message[binary_idx])
             binary_idx += 1
+
             img[i:i+8, j:j+8] = cv2.idct(dct_block).clip(0, 255).astype(np.uint8)
 
     cv2.imwrite(output_path, img)
+
 
 def extract_message_dct(image_path):
     img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)

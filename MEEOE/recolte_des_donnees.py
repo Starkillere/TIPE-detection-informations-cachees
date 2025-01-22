@@ -4,17 +4,19 @@ import sqlite3 as s3
 from PIL import Image
 import librosa
 import cv2
-from scipy.stats import shapiro, normaltest
+from scipy.stats import shapiro
 from scipy.io import wavfile
 from pydub import AudioSegment
 from skimage.util import random_noise
-from scipy.signal import white_noise
 from scipy.stats import chi2_contingency
 from scipy.fft import fft, fft2
 from scipy.signal import welch
 from pywt import wavedec2
 from scipy.linalg import lapack
-
+from scipy import linalg
+import pickle
+from datetime import datetime
+import random
 
 def collect_cover_from_db(database: str) -> list[dict]:
     """
@@ -42,8 +44,31 @@ def collect_cover_from_db(database: str) -> list[dict]:
         conn.close()
     except Exception as e:
         print(f"Erreur lors de la collecte des données de couverture : {e}")
+        exit(0)
     
     return covers
+
+def collect_hote_data_from_db(database: str) -> list[dict]:
+    """
+    Collecte les données hôtes depuis la base de données.
+    """
+    hotes = []
+    try:
+        conn = s3.connect(database)
+        cursor = conn.cursor()
+        query = "SELECT id, path, type, methode, taille FROM hote_data"
+        for row in cursor.execute(query):
+            hotes.append({
+                "id": row[0],
+                "path": row[1],
+                "type": row[2],
+                "methode": row[3],
+                "taille": row[4],
+            })
+        conn.close()
+    except Exception as e:
+        print(f"Erreur lors de la collecte des données hôtes: {e}")
+    return hotes
 
 
 def entropie_desdonnes_cachees(cover:dict) -> float:
@@ -52,16 +77,16 @@ def entropie_desdonnes_cachees(cover:dict) -> float:
         case "img":
             image = Image.open(cover["path"]).convert("L")
             pixel_array = np.array(image)
-            histogram, _ = np.histogram(pixel_array, bin=256, range=(0,256), density=True)
-            histogram =  histogram[histogram > 0]
-            entropy =  -np.sum(histogram*np.log2(histogram))
+            histograme, _ = np.histogram(pixel_array, bins=256, range=(0,256), density=True)
+            histograme =  histograme[histograme > 0]
+            entropy =  -np.sum(histograme*np.log2(histograme))
 
         case "son":
             signal, sr = librosa.load(cover["path"], sr=None, mono=True)
             signal_normalized = (signal - np.min(signal)) / (np.max(signal) - np.min(signal))
-            histogram, _ = np.histogram(signal_normalized, bin=256, range=(0, 1), density=True)
-            histogram = histogram[histogram > 0]
-            entropy =  - np.sum(histogram*np.log2(histogram))
+            histograme, _ = np.histogram(signal_normalized, bins=256, range=(0, 1), density=True)
+            histograme = histograme[histograme > 0]
+            entropy =  - np.sum(histograme*np.log2(histograme))
         
     return entropy
 
@@ -94,18 +119,21 @@ def test_de_normalite(cover:dict) -> bool:
                 data = data.mean(axis=1)
             _,p_value =  shapiro(data)
             normal = p_value > alpha
-    return normal
+    return int(normal)
 
 def resitance_a_la_compression(cover:dict):
     psnr:float =  0.0
+    pathfile:str =  f"delete/to_delete_{datetime.now().strftime('%Y%m%d%H%M%S')}_{random.randint(0,99999999999)}{cover['path'][18:]}_."+cover["path"].split(".")[len(cover["path"].split("."))-1]
     match cover["type"]:
         case "img":
             res:float =  0.0
             compression_quality = 50
-            image =  cv2.imread(cover["path"])
-            cv2.imwrite("to_delete."+cover["path"].split(".")[len(cover["path"].split("."))-1], image, [cv2.IMWRITE_JPEG_QUALITY, compression_quality])
-            compressed_image =  cv2.imread("to_delete."+cover["path"].split(".")[len(cover["path"].split("."))-1])
+            image = cv2.imread(cover["path"])
+            if image is None:
+                raise FileNotFoundError(f"Unable to load image from path: {cover['path']}")
 
+            cv2.imwrite(pathfile, image, [cv2.IMWRITE_JPEG_QUALITY, compression_quality])
+            compressed_image =  cv2.imread(pathfile)
             mse = np.mean((image - compressed_image)**2)
 
             if mse == 0:
@@ -119,8 +147,8 @@ def resitance_a_la_compression(cover:dict):
             audio = AudioSegment.from_file(cover["path"])
             original_samples = np.array(audio.get_array_of_samples())
 
-            audio.export("to_delete."+cover["path"].split(".")[len(cover["path"].split("."))-1], format=codec, bitrate=bitrate)
-            compressed_audio =  AudioSegment.from_file("to_delete."+cover["path"].split(".")[len(cover["path"].split("."))-1])
+            audio.export(pathfile, format=codec, bitrate=bitrate)
+            compressed_audio =  AudioSegment.from_file(pathfile)
             compressed_samples =  np.array(compressed_audio.get_array_of_samples())
 
             min_length = min(len(original_samples), len(compressed_samples))
@@ -176,13 +204,13 @@ def test_du_khi_carree(cover: dict):
             image = cv2.imread(cover["path"], cv2.IMREAD_GRAYSCALE)
             hist, _ = np.histogram(image.ravel(), bins=256)
             expected = np.mean(hist)
-            chi2_stat, p_val = chi2_contingency([hist, [expected]*256])
+            chi2_stat, p_val, _, _ = chi2_contingency([hist, [expected] * 256])
             res = 1 if p_val > 0.05 else 0
         case "son":
             _, audio = wavfile.read(cover["path"])
             hist, _ = np.histogram(audio, bins=256)
             expected = np.mean(hist)
-            chi2_stat, p_val = chi2_contingency([hist, [expected]*256])
+            chi2_stat, p_val, _, _ = chi2_contingency([hist, [expected] * 256])
             res = 1 if p_val > 0.05 else 0
     return res
 
@@ -195,10 +223,9 @@ def spectre(cover: dict):
         case "son":
             _, audio = wavfile.read(cover["path"])
             res = np.abs(fft(audio))
-    return res
 
-def transformation_en_serie_de_fourier(cover: dict):
-    return spectre(cover) 
+    res_serialized = pickle.dumps(res)
+    return res_serialized
 
 def transformation_en_ondelette(cover: dict):
     res = None
@@ -211,7 +238,8 @@ def transformation_en_ondelette(cover: dict):
             _, audio = wavfile.read(cover["path"])
             coeffs = wavedec2(audio.reshape(1, -1), wavelet='haar', level=2)
             res = coeffs
-    return res
+    res_serialized = pickle.dumps(res)
+    return res_serialized
 
 def la_transformation_de_laplace(cover: dict):
     res = None
@@ -224,33 +252,31 @@ def la_transformation_de_laplace(cover: dict):
             _, audio = wavfile.read(cover["path"])
             laplace_transform = np.gradient(audio)
             res = laplace_transform
-    return res
-
-def transformation_en_z(cover: dict):
-    res = None
-    match cover["type"]:
-        case "img":
-            image = cv2.imread(cover["path"], cv2.IMREAD_GRAYSCALE)
-            z_transform = lapack.dgeev(image.astype(float), compute_vl=False, compute_vr=False)[0]
-            res = z_transform
-        case "son":
-            _, audio = wavfile.read(cover["path"])
-            z_transform = lapack.dgeev(audio.astype(float), compute_vl=False, compute_vr=False)[0]
-            res = z_transform
-    return res
+    res_serialized = pickle.dumps(res)
+    return res_serialized
 
 def dct_pour_la_compression(cover: dict):
     res = None
     match cover["type"]:
         case "img":
             image = cv2.imread(cover["path"], cv2.IMREAD_GRAYSCALE)
-            dct_image = cv2.dct(image.astype(float))
+            h, w = image.shape
+            if h % 2 != 0 or w % 2 != 0:
+                new_h = h + 1 if h % 2 != 0 else h
+                new_w = w + 1 if w % 2 != 0 else w
+                image_resized = cv2.resize(image, (new_w, new_h)) 
+            else:
+                image_resized = image
+            dct_image = cv2.dct(image_resized.astype(float))
             res = dct_image
+
         case "son":
             _, audio = wavfile.read(cover["path"])
             dct_audio = fft(audio)
             res = dct_audio
-    return res
+
+    res_serialized = pickle.dumps(res)
+    return res_serialized
 
 def analyse_de_la_densite_spectrale_de_puissance(cover: dict):
     res = None
@@ -263,4 +289,136 @@ def analyse_de_la_densite_spectrale_de_puissance(cover: dict):
             _, audio = wavfile.read(cover["path"])
             frequencies, power = welch(audio)
             res = {"frequencies": frequencies, "power": power}
-    return res
+
+    res_serialized = pickle.dumps(res)
+    return res_serialized
+
+
+def data_collect(database: str) -> dict:
+    """
+    Collecte des métriques sur les données cachées dans les couvertures et les stocke dans une base de données.
+    
+    INPUT:
+        database (str): Chemin vers la base de données SQLite.
+        
+    OUTPUT:
+        dict: Une liste de dictionnaires contenant les métriques collectées.
+    """
+    covers = collect_cover_from_db(database) 
+    datas = []
+    
+    conn = s3.connect(database)
+    cursor = conn.cursor()
+
+    for cover in covers:
+        data = {}
+        data["id_coverData"] = cover["id"]
+        data["entropie_des_donnes_cachees"] = entropie_desdonnes_cachees(cover)
+        data["variance_a_la_compression"] = variance_des_donnees_cachees(cover)
+        data["tests_de_normalite"] = test_de_normalite(cover)
+        data["resistance_a_la_compression"] = resitance_a_la_compression(cover)
+        data["resistance_au_bruit"] = resitance_au_bruit(cover)
+        data["test_du_khi_carree"] = test_du_khi_carree(cover)
+        data["spectre"] = spectre(cover)
+        data["transformation_en_ondelette"] = transformation_en_ondelette(cover)
+        data["la_transformee_de_laplace"] = la_transformation_de_laplace(cover)
+        data["la_dct_pour_la_compression"] = dct_pour_la_compression(cover)
+        data["l_analyse_de_la_densite_spectrale_de_puissance"] = analyse_de_la_densite_spectrale_de_puissance(cover)
+
+        datas.append(data)
+
+        cursor.execute("""
+            INSERT INTO data (
+                id_coverData, 
+                entropie_des_donnees_cachees, 
+                variance_des_donnees_porteuses,
+                tests_de_normalite, 
+                resistance_a_la_compression, 
+                resistance_au_bruit, 
+                test_du_khi_carree, 
+                spectre,  
+                transformation_en_ondelette, 
+                la_transformee_de_laplace, 
+                la_dct_pour_la_compression, 
+                l_analyse_de_la_densite_spectrale_de_puissance
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            data["id_coverData"],
+            data["entropie_des_donnes_cachees"],
+            data["variance_a_la_compression"],
+            data["tests_de_normalite"],
+            data["resistance_a_la_compression"],
+            data["resistance_au_bruit"],
+            data["test_du_khi_carree"],
+            data["spectre"],
+            data["transformation_en_ondelette"],
+            data["la_transformee_de_laplace"],
+            data["la_dct_pour_la_compression"],
+            data["l_analyse_de_la_densite_spectrale_de_puissance"]
+        ))
+
+    conn.commit()
+    conn.close()
+
+    return datas
+
+
+def data_collect_without_transformation(database: str) -> dict:
+
+    covers = collect_hote_data_from_db(database) 
+    datas = []
+    
+    conn = s3.connect(database)
+    cursor = conn.cursor()
+
+    for cover in covers:
+        data = {}
+        data["id_hote"] = cover["id"]
+        data["entropie_des_donnes_cachees"] = entropie_desdonnes_cachees(cover)
+        data["variance_a_la_compression"] = variance_des_donnees_cachees(cover)
+        data["tests_de_normalite"] = test_de_normalite(cover)
+        data["resistance_a_la_compression"] = resitance_a_la_compression(cover)
+        data["resistance_au_bruit"] = resitance_au_bruit(cover)
+        data["test_du_khi_carree"] = test_du_khi_carree(cover)
+        data["spectre"] = spectre(cover)
+        data["transformation_en_ondelette"] = transformation_en_ondelette(cover)
+        data["la_transformee_de_laplace"] = la_transformation_de_laplace(cover)
+        data["la_dct_pour_la_compression"] = dct_pour_la_compression(cover)
+        data["l_analyse_de_la_densite_spectrale_de_puissance"] = analyse_de_la_densite_spectrale_de_puissance(cover)
+
+        datas.append(data)
+
+        cursor.execute("""
+            INSERT INTO data_without_transformation (
+                id_hote, 
+                entropie_des_donnees_cachees, 
+                variance_des_donnees_porteuses,
+                tests_de_normalite, 
+                resistance_a_la_compression, 
+                resistance_au_bruit, 
+                test_du_khi_carree, 
+                spectre, 
+                transformation_en_ondelette, 
+                la_transformee_de_laplace, 
+                la_dct_pour_la_compression, 
+                l_analyse_de_la_densite_spectrale_de_puissance
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            data["id_hide"],
+            data["entropie_des_donnes_cachees"],
+            data["variance_a_la_compression"],
+            data["tests_de_normalite"],
+            data["resistance_a_la_compression"],
+            data["resistance_au_bruit"],
+            data["test_du_khi_carree"],
+            data["spectre"],
+            data["transformation_en_ondelette"],
+            data["la_transformee_de_laplace"],
+            data["la_dct_pour_la_compression"],
+            data["l_analyse_de_la_densite_spectrale_de_puissance"]
+        ))
+
+    conn.commit()
+    conn.close()
+
+    return datas
