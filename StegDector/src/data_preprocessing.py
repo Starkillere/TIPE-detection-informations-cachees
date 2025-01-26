@@ -8,7 +8,7 @@
 
 from PIL import Image
 import numpy as np
-from scipy.io import wavfile
+import random
 import faker
 import os
 import sqlite3
@@ -29,7 +29,8 @@ dir_stego =  "data/stego/"
 
      # Algorithms de dissimulation (lsb pour les image images)/mpa les audios)) sur du text
 
-def lsb(input_file:str, output_file:str, message) -> None:
+
+def lsb_text(input_file:str, output_file:str, message) -> None:
     assert input_file.split(".")[-1] == "jpg"
     assert output_file.split(".")[-1] == "jpg"
 
@@ -58,22 +59,77 @@ def lsb(input_file:str, output_file:str, message) -> None:
     img.putdata(new_data)
     img.save(output_file)
 
-def mpa(input_file:str, output_file:str, message) -> None:
-    assert input_file.split(".")[-1] == "wav"
-    assert output_file.split(".")[-1] == "wav"
+def lsb_image(input_file:str, output_file:str):
+    assert input_file.split(".")[-1] == "jpg"
+    assert output_file.split(".")[-1] == "jpg"
 
-    rate, data = wavfile.read(input_file)
-    binary_message = ''.join(format(ord(char), '08b') for char in message) + '11111110'
-    message_bits = list(map(int, binary_message))
-    flat_data = data.flatten()
-    if len(message_bits) > len(flat_data):
-        raise ValueError("Message too large for audio.")
+    mat_hote =  np.array(Image.open(input_file))
+    mat_image_a_cacher =  np.random.randint(0, 256, (len(mat_hote), len(mat_hote[0]), 3), dtype=np.uint8)
+
+    ligne =  list()
+    for i in range(len(mat_image_a_cacher)):
+        colonne = list()
+        for j in range(len(mat_image_a_cacher[0])):
+            pixel =  list()
+            for p in range(3):
+
+                bit_hote = (bin(mat_hote[i][j][p])[2:])
+                bit_hote = ((8-len(bit_hote))*"0"+bit_hote)[:4]
+
+                bit_cache = (bin(mat_image_a_cacher[i][j][p])[2:])
+                bit_cache = ((8-len(bit_cache))*"0"+bit_cache)[:4]
+
+                bit =  bit_hote+bit_cache
+                
+                int_bit =  np.uint8(int(bit,2))
+
+                pixel.append(int_bit)
+            colonne.append(tuple(pixel))
+        ligne.append(colonne)
     
-    for i, bit in enumerate(message_bits):
-        flat_data[i] = (flat_data[i] & ~1) | bit
+    img = np.array(ligne)
+    img =  Image.fromarray(img)
+    img.save(output_file)
 
-    new_data = flat_data.reshape(data.shape)
-    wavfile.write(output_file, rate, new_data.astype(data.dtype))
+def codage_pixels(input_file: str, output_file: str, message: str):
+    assert input_file.split(".")[-1].lower() == "jpg"
+    assert output_file.split(".")[-1].lower() == "jpg"
+
+    image = Image.open(input_file)
+    image = np.array(image)
+
+    message_bin = ''.join(format(ord(c), '08b') for c in message) + '1111111111111110'
+
+    max_bits = image.size * 3
+    assert len(message_bin) <= max_bits, "Le message est trop long pour être dissimulé dans l'image."
+
+    flat_image = image.flatten()
+    for i, bit in enumerate(message_bin):
+        flat_image[i] = (flat_image[i] & 254) | int(bit)
+
+    encoded_image = flat_image.reshape(image.shape)
+    encoded_image = Image.fromarray(encoded_image)
+    encoded_image.save(output_file)
+
+def palette_de_couleur(input_file: str, output_file: str, message: str):
+    assert input_file.split(".")[-1].lower() == "jpg"
+    assert output_file.split(".")[-1].lower() == "jpg"
+
+    image = Image.open(input_file).convert("RGB")
+    image_array = np.array(image)
+
+    message_bin = ''.join(format(ord(c), '08b') for c in message)
+    message_values = [int(message_bin[i:i+8], 2) for i in range(0, len(message_bin), 8)]
+
+    transformed_image = image_array.copy()
+    for i, value in enumerate(message_values):
+        transformed_image[..., i % 3] = np.uint8(transformed_image[..., i % 3] + value)
+
+
+    transformed_image_pil = Image.fromarray(transformed_image)
+    transformed_image_pil.save(output_file)
+
+
 
     # Création des données (stego / clean)
 
@@ -86,7 +142,6 @@ def creation_donnees() -> None:
     stegos =  images[:(len(images)//2)] + audios[:(len(audios)//2)]
     cleans =  images[(len(images)//2):] + audios[(len(audios)//2):]
     fk =  faker.Faker()
-    messages = [fk.text(max_nb_chars=longueur_max_message) for i in range(len(stegos))]
 
      # sauvegarder clean
 
@@ -95,13 +150,22 @@ def creation_donnees() -> None:
         dest_path = os.path.join(dir_clean, fichier)
         shutil.copy(source_path, dest_path)
     
-     # creation stego et sauvegarde
-
     for stego in stegos:
-        if stego.split(".")[-1] == "jpg":
-            lsb(f"{dir_data}{stego}", f"{dir_stego}{stego}", messages[stegos.index(stego)])
-        else:
-            mpa(f"{dir_data}{stego}", f"{dir_stego}{stego}", messages[stegos.index(stego)])
+
+        match random.choice([0,1,2,3]):
+            case 0:
+                message =  fk.text(max_nb_chars=longueur_max_message)
+                lsb_text(f"{dir_data}{stego}", f"{dir_stego}{stego}", message)
+            case 1:
+                lsb_image(f"{dir_data}{stego}", f"{dir_stego}{stego}")
+            case 2:
+                message =  fk.text(max_nb_chars=longueur_max_message)
+                codage_pixels(f"{dir_data}{stego}", f"{dir_stego}{stego}", message)
+            case 3:
+                message =  fk.text(max_nb_chars=longueur_max_message)
+                palette_de_couleur(f"{dir_data}{stego}", f"{dir_stego}{stego}", message)
+    
+     # creation stego et sauvegarde
 
 # base de données
 
@@ -122,6 +186,8 @@ def create_database(db_path):
             std_dev REAL,
             energy REAL,
             variance REAL,
+            khi2 REAL,
+            vraisemblance REAL,
             is_stego INTEGER
         )
     ''')
@@ -139,8 +205,8 @@ def insert_features_into_db(db_path, features):
         cursor.execute('''
             INSERT INTO features (
                 file_size, entropy, zero_density, one_density, 
-                mean_value, std_dev, energy, variance, is_stego
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                mean_value, std_dev, energy, variance, khi2, vraisemblance, is_stego
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             feature["file_size"],
             feature["entropy"],
@@ -150,6 +216,8 @@ def insert_features_into_db(db_path, features):
             feature["std_dev"],
             feature["energy"],
             feature["variance"],
+            feature["khi2"],
+            feature["vraisemblance"],
             feature["is_stego"]
         ))
         print(f"Données insérées : {features}")
