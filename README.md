@@ -10,7 +10,9 @@
 
 ## Sources des données :
 - **Source d'images** : [Kaggle Landscape Images Dataset](https://www.kaggle.com/datasets/arnaud58) 
-- **Source de données pour l'entraînement** : [Speaker Recognition Audio Dataset](https://www.kaggle.com/datasets/vjcalling/speaker-recognition-audio-dataset)
+- **Source de données pour l'entraînement** : [Speaker Recognition Audio Dataset](https://www.kaggle.com/datasets/vjcalling/
+speaker-recognition-audio-dataset)
+- **Source CCN-data-image : [imageNET](https://www.kaggle.com/c/imagenet-object-localization-challenge/data)
 
 ## Objectifs :
 Le projet se concentre sur la détection d’informations cachées dans des images JPG en recherchant un invariant qui soit indépendant de la méthode de dissimulation utilisée. L'objectif est de concevoir un algorithme capable d'analyser des fichiers JPG et de détecter la présence d'information cachée sans connaître préalablement la méthode de stéganographie employée.
