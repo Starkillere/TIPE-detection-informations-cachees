@@ -1,5 +1,9 @@
+"""
+    Par Ayouba Anrezki
+    le 2/01/2025
+"""
+
 from PIL import Image
-import cv2
 import numpy as np
 from PIL.ExifTags import TAGS
 
@@ -27,6 +31,9 @@ class LSBSteganography:
                     else:
                         break
         
+        # S'assurer que les valeurs des pixels restent dans la plage 0-255
+        pixels = np.clip(pixels, 0, 255).astype(np.uint8)
+        
         # Sauvegarder l'image modifiée
         stego_image = Image.fromarray(pixels)
         stego_image.save(output_path)
@@ -47,6 +54,9 @@ class LSBSteganography:
             for j in range(cover_pixels.shape[1]):
                 for k in range(3):
                     cover_pixels[i, j, k] = (cover_pixels[i, j, k] & ~1) | ((secret_pixels[i, j, k] >> 7) & 1)
+        
+        # S'assurer que les valeurs des pixels restent dans la plage 0-255
+        cover_pixels = np.clip(cover_pixels, 0, 255).astype(np.uint8)
         
         # Sauvegarder l'image modifiée
         stego_image = Image.fromarray(cover_pixels)
@@ -105,6 +115,9 @@ class InvisiblePixelsSteganography:
                             idx += 1
                         else:
                             break
+        
+        # S'assurer que les valeurs des pixels restent dans la plage 0-255
+        pixels = np.clip(pixels, 0, 255).astype(np.uint8)
         
         # Sauvegarder l'image modifiée
         stego_image = Image.fromarray(pixels)

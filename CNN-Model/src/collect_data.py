@@ -1,30 +1,33 @@
-import os
-import requests
-import numpy as np
-from PIL import Image
-from io import BytesIO
-import cv2
-from steganography import LSBSteganography, StyleTransferSteganography, EXIFSteganography, InvisiblePixelsSteganography
+"""
+    Par Ayouba Anrezki
+    le 2/01/2025
+"""
 
-def download_imagenet_images(output_dir, num_images):
+import os
+import torchvision.datasets as datasets
+import torchvision.transforms as transforms
+from PIL import Image
+from .steganography import LSBSteganography, StyleTransferSteganography, EXIFSteganography, InvisiblePixelsSteganography
+
+def download_images(output_dir, num_images, dataset_name="CIFAR10"):
     """
-    Télécharge des images depuis ImageNet et les enregistre dans le dossier spécifié.
+    Télécharge des images depuis un dataset prédéfini (comme CIFAR-10) et les enregistre dans le dossier spécifié.
     """
-    # Exemple d'URL d'ImageNet (à adapter selon l'API ou la source utilisée)
-    base_url = "http://www.image-net.org/api/text/imagenet.synset.geturls?wnid=n00000000"
+    os.makedirs(output_dir, exist_ok=True)
     
-    # Télécharger les URLs des images
-    response = requests.get(base_url)
-    image_urls = response.text.splitlines()
+    # Choix du dataset
+    if dataset_name == "CIFAR10":
+        dataset = datasets.CIFAR10(root='./data', download=True, transform=transforms.ToTensor())
+    elif dataset_name == "CIFAR100":
+        dataset = datasets.CIFAR100(root='./data', download=True, transform=transforms.ToTensor())
+    else:
+        raise ValueError("Dataset non supporté. Utilisez 'CIFAR10' ou 'CIFAR100'.")
     
-    # Télécharger les images
-    for i, url in enumerate(image_urls[:num_images]):
-        try:
-            response = requests.get(url)
-            image = Image.open(BytesIO(response.content))
-            image.save(os.path.join(output_dir, f"image_{i}.jpg"))
-        except Exception as e:
-            print(f"Erreur lors du téléchargement de l'image {url}: {e}")
+    # Sauvegarder les images
+    for i in range(min(num_images, len(dataset))):
+        image, _ = dataset[i]  # Ignorer les étiquettes
+        image = transforms.ToPILImage()(image)
+        image.save(os.path.join(output_dir, f"image_{i}.jpg"))
 
 def apply_steganography(input_dir, output_dir, num_stego_images):
     """
