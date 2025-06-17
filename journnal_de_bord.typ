@@ -84,6 +84,8 @@ Il existe un champ de recherche à part entière qui s'intéresse à la distinct
 = 10/10/2024 : Définition du répertoire documentation/prototypage
 == Définition formelle de l'information
 
+= 21/03/2025 : Changement de dataset
+Pour la prochaine fois pensé  à charger les donnée depui image net et les travaiullé en back pour faire mon own dataset.
 =  Vocabulaire (MAJ 12/03/2024)
 + données pures : données ne cachant pas d'autres données issues d'un processus stéganographique.
 + cover : support pour la dissimulation d'informations cachées.

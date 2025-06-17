@@ -26,7 +26,7 @@ class LSBSteganography:
             for j in range(pixels.shape[1]):
                 for k in range(3):  # Pour chaque canal (R, G, B)
                     if idx < text_length:
-                        pixels[i, j, k] = (pixels[i, j, k] & ~1) | int(binary_text[idx])
+                        pixels[i, j, k] = (pixels[i, j, k] & ~1) | np.int8(binary_text[idx])
                         idx += 1
                     else:
                         break
